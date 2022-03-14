@@ -47,10 +47,10 @@ public class SignControllerTest {
     @Before
     public void setUp() {
         userJpaRepo.save(User.builder()
-                .name("woonsik")
-                .password(passwordEncoder.encode("password"))
-                .nickName("woonsik")
-                .email("email@email.com")
+                .name("name1")
+                .password(passwordEncoder.encode("password1"))
+                .nickName("nickname1")
+                .email("email1@gmail.com")
                 .roles(Collections.singletonList("ROLE_USER"))
                 .build());
     }
@@ -58,8 +58,8 @@ public class SignControllerTest {
     @Test
     public void 로그인_성공() throws Exception {
         String object = objectMapper.writeValueAsString(UserLoginRequestDto.builder()
-                .email("email@email.com")
-                .password("password")
+                .email("email1@gmail.com")
+                .password("password1")
                 .build());
         //given
         ResultActions actions = mockMvc.perform(post("/v1/sign/login")
@@ -81,10 +81,10 @@ public class SignControllerTest {
         long time = LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond();
 
         String object = objectMapper.writeValueAsString(UserSignupRequestDto.builder()
-                .email("email@email.com" + time)
-                .nickName("woonsik")
-                .name("woonsik")
-                .password("myPassword")
+                .email("email1@gmail.com" + time)
+                .nickName("nickname1")
+                .name("name1")
+                .password("password1")
                 .build());
         ResultActions actions = mockMvc.perform(
                 post("/v1/sign/signup")
@@ -105,10 +105,10 @@ public class SignControllerTest {
     public void 회원가입_실패() throws Exception {
         //given
         String object = objectMapper.writeValueAsString(UserSignupRequestDto.builder()
-                .name("woonsik")
-                .email("email@email.com")
-                .password("password")
-                .nickName("woonsik")
+                .name("name1")
+                .email("email1@gmail.com")
+                .password("password1")
+                .nickName("nickname1")
                 .build());
 
         //when
@@ -129,7 +129,7 @@ public class SignControllerTest {
     {
         //given
         String object = objectMapper.writeValueAsString(UserLoginRequestDto.builder()
-                .email("email@email.com")
+                .email("email1@gmail.com")
                 .password("wrongPassword")
                 .build());
         //when

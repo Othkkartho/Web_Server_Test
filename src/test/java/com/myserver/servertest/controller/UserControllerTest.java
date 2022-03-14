@@ -49,10 +49,10 @@ public class UserControllerTest {
     @Before
     public void setUp() {
         User save = userJpaRepo.save(User.builder()
-                .name("woonsik")
-                .password(passwordEncoder.encode("password"))
-                .nickName("woonsik")
-                .email("email@email.com")
+                .name("name1")
+                .password(passwordEncoder.encode("password1"))
+                .nickName("nickname1")
+                .email("email1@gmail.com")
                 .roles(Collections.singletonList("ROLE_USER"))
                 .build());
         id = Math.toIntExact(save.getUserId());
@@ -62,14 +62,14 @@ public class UserControllerTest {
     public void 회원조회_이메일() throws Exception {
         //then
         ResultActions actions = mockMvc.perform(
-                get("/v1/user/email/{email}", "email@email.com")
-                        .param("lang", "en"));
+                get("/v1/user/email/{email}", "email1@gmail.com")
+                        .param("lang", "ko"));
 
         actions
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.email", is("email@email.com")))
-                .andExpect(jsonPath("$.data.name", is("woonsik")))
+                .andExpect(jsonPath("$.data.email", is("email1@gmail.com")))
+                .andExpect(jsonPath("$.data.name", is("name1")))
                 .andReturn();
     }
 
@@ -77,14 +77,14 @@ public class UserControllerTest {
     public void 회원조회_userId() throws Exception {
         //given
         ResultActions actions = mockMvc.perform(get("/v1/user/id/{id}", id)
-                .param("lang", "en"));
+                .param("lang", "ko"));
         //when
         //then
         actions.andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.userId", is(id)))
-                .andExpect(jsonPath("$.data.email", is("email@email.com")))
-                .andExpect(jsonPath("$.data.name", is("woonsik")));
+                .andExpect(jsonPath("$.data.email", is("email1@gmail.com")))
+                .andExpect(jsonPath("$.data.name", is("name1")));
     }
 
     @Test

@@ -27,9 +27,9 @@ public class UserJpaRepoTest {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    private String name = "woonsik";
-    private String email = "dnstlr2933@naver.com";
-    private String password = "myPassWord";
+    private String name = "name1";
+    private String email = "email1@gmail.com";
+    private String password = "password1";
 
 
     @Test
