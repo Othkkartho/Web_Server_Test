@@ -1,12 +1,8 @@
 package com.myserver.servertest.Service.user;
 
-import com.myserver.servertest.advice.exception.CEmailLoginFailedException;
-import com.myserver.servertest.advice.exception.CEmailSignupFailedException;
 import com.myserver.servertest.advice.exception.CUserNotFoundException;
 import com.myserver.servertest.domain.user.User;
 import com.myserver.servertest.domain.user.UserJpaRepo;
-import com.myserver.servertest.dto.sign.UserLoginResponseDto;
-import com.myserver.servertest.dto.sign.UserSignupRequestDto;
 import com.myserver.servertest.dto.user.UserRequestDto;
 import com.myserver.servertest.dto.user.UserResponseDto;
 import lombok.AllArgsConstructor;
@@ -21,7 +17,6 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class UserService {
     private UserJpaRepo userJpaRepo;
-    private PasswordEncoder passwordEncoder;
 
     @Transactional
     public Long save(UserRequestDto userDto) {
@@ -60,21 +55,6 @@ public class UserService {
     @Transactional
     public void delete(Long id) {
         userJpaRepo.deleteById(id);
-    }
-
-    @Transactional(readOnly = true)
-    public UserLoginResponseDto login(String email, String password) {
-        User user = userJpaRepo.findByEmail(email).orElseThrow(CEmailLoginFailedException::new);
-        if (!passwordEncoder.matches(password, user.getPassword()))
-            throw new CEmailLoginFailedException();
-        return new UserLoginResponseDto(user);
-    }
-
-    @Transactional
-    public Long signup(UserSignupRequestDto userSignupDto) {
-        if (userJpaRepo.findByEmail(userSignupDto.getEmail()).orElse(null) == null)
-            return userJpaRepo.save(userSignupDto.toEntity()).getUserId();
-        else throw new CEmailSignupFailedException();
     }
 }
 

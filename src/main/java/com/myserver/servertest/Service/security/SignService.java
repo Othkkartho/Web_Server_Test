@@ -1,9 +1,6 @@
 package com.myserver.servertest.Service.security;
 
-import com.myserver.servertest.advice.exception.CEmailLoginFailedException;
-import com.myserver.servertest.advice.exception.CEmailSignupFailedException;
-import com.myserver.servertest.advice.exception.CRefreshTokenException;
-import com.myserver.servertest.advice.exception.CUserNotFoundException;
+import com.myserver.servertest.advice.exception.*;
 import com.myserver.servertest.config.security.JwtProvider;
 import com.myserver.servertest.domain.security.RefreshToken;
 import com.myserver.servertest.domain.security.RefreshTokenJpaRepo;
@@ -52,13 +49,6 @@ public class SignService {
     }
 
     @Transactional
-    public Long signup(UserSignupRequestDto userSignupDto) {
-        if (userJpaRepo.findByEmail(userSignupDto.getEmail()).isPresent())
-            throw new CEmailSignupFailedException();
-        return userJpaRepo.save(userSignupDto.toEntity(passwordEncoder)).getUserId();
-    }
-
-    @Transactional
     public TokenDto reissue(TokenRequestDto tokenRequestDto) {
         // 만료된 refresh token 에러
         if (!jwtProvider.validationToken(tokenRequestDto.getRefreshToken())) {
@@ -70,7 +60,7 @@ public class SignService {
         Authentication authentication = jwtProvider.getAuthentication(accessToken);
 
         // user pk로 유저 검색 / repo 에 저장된 Refresh Token 이 없음
-        User user = userJpaRepo.findById(Long.parseLong(authentication.getName())).orElseThrow(CUserNotFoundException::new);
+        User user = userJpaRepo.findByName(authentication.getName()).orElseThrow(CUserNotFoundException::new);
         RefreshToken refreshToken = tokenJpaRepo.findByKey(user.getUserId()).orElseThrow(CRefreshTokenException::new);
 
         // 리프레시 토큰 불일치 에러
@@ -83,5 +73,21 @@ public class SignService {
         tokenJpaRepo.save(updateRefreshToken);
 
         return newCreatedToken;
+    }
+
+    @Transactional // 기존 회원가입
+    public Long signup(UserSignupRequestDto userSignupDto) {
+        if (userJpaRepo.findByEmail(userSignupDto.getEmail()).isPresent())
+            throw new CEmailSignupFailedException();
+        return userJpaRepo.save(userSignupDto.toEntity(passwordEncoder)).getUserId();
+    }
+
+    @Transactional // 소셜 회원가입 - 패스워드가 필요없으므로 따로 만듬
+    public Long socialSignup(UserSignupRequestDto userSignupRequestDto) {
+        if (userJpaRepo.findByEmailAndProvider(userSignupRequestDto.getEmail(), userSignupRequestDto.getProvider())
+                .isPresent()
+        ) throw new CUserExistException();
+        System.out.println("1");
+        return userJpaRepo.save(userSignupRequestDto.toEntity()).getUserId();
     }
 }
