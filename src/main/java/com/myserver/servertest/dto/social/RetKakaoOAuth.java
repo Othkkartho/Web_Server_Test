@@ -1,4 +1,4 @@
-package com.myserver.servertest.controller.oatuh;
+package com.myserver.servertest.dto.social;
 
 import lombok.Getter;
 
