@@ -1,8 +1,6 @@
 package com.myserver.servertest.controller.v1;
 
 import com.myserver.servertest.Service.user.UserService;
-import com.myserver.servertest.domain.user.User;
-import com.myserver.servertest.domain.user.UserJpaRepo;
 import com.myserver.servertest.dto.user.UserRequestDto;
 import com.myserver.servertest.dto.user.UserResponseDto;
 import com.myserver.servertest.model.response.CommonResult;
@@ -11,10 +9,7 @@ import com.myserver.servertest.Service.response.ResponseService;
 import com.myserver.servertest.model.response.SingleResult;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 //@PreAuthorize("hasRole('ROLE_USER') and hasAnyRole('ROLE_IORN', 'ROLE_SILVER', 'ROLE_GOLD', 'ROLE_BRONZE')")
 @Api(tags = {"2. User"})
@@ -24,6 +19,7 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
     private final ResponseService responseService;
+
 
 //    @PreAuthorize("hasRole('ROLE_PLATINUM') and hasRole('ROLE_GOLD')")
     @ApiImplicitParams({
